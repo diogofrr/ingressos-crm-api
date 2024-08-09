@@ -1,6 +1,8 @@
 import PDFDocument from 'pdfkit';
 import QRCode from 'qrcode';
 import { Buffer } from 'buffer';
+import { fileURLToPath } from 'url'
+import path from 'path';
 import fs from 'fs';
 
 class pdfUtils {
@@ -34,16 +36,22 @@ class pdfUtils {
         });
 
         const titulo = 'SAMBA DO SEU ZÉ';
+        doc.fontSize(25).font('Helvetica-Bold');
         const titleWidth = doc.widthOfString(titulo);
-        const imagePath = '../img/fundoIngresso.png';
+        const titleX = doc.x; 
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+        const imagePath = path.resolve(__dirname ,'../img/fundoIngresso.png');;
 
-        doc.text(title, {
+        doc.text(titulo, {
             align: 'left',
             continued: true // Permite que o texto continue na mesma linha para a próxima chamada
         });
 
         // Adicionar imagem ao lado direito do título
-        doc.image(imagePath, doc.x + 10, doc.y - 25, {
+        const imageX = titleX + titleWidth + 10; // Posiciona a imagem após o título com uma margem de 10 unidades
+        const imageY = doc.y - 25; // Mantém a imagem alinhada verticalmente com o título
+        doc.image(imagePath, imageX, imageY, {
             fit: [50, 50], // Ajuste o tamanho da imagem conforme necessário
             valign: 'center'
         });
@@ -55,6 +63,7 @@ class pdfUtils {
         //     fontWeight: 600
         // });
 
+        doc.moveDown();
         doc.moveDown();
 
         // Adicionar campos para preenchimento
