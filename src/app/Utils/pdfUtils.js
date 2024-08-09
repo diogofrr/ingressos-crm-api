@@ -44,19 +44,19 @@ class pdfUtils {
         const imagePath = path.resolve(__dirname ,'../img/fundoIngresso.png');;
 
         doc.text(titulo, {
-            align: 'left',
-            continued: true // Permite que o texto continue na mesma linha para a próxima chamada
+            align: 'left'
         });
 
         // Adicionar imagem ao lado direito do título
         const imageX = titleX + titleWidth + 200; // Posiciona a imagem após o título com uma margem de 10 unidades
-        const imageY = doc.y - 25; // Mantém a imagem alinhada verticalmente com o título
+        const imageY = doc.y - 50; // Mantém a imagem alinhada verticalmente com o título
         doc.image(imagePath, imageX, imageY, {
             fit: [50, 50], // Ajuste o tamanho da imagem conforme necessário
             valign: 'center'
         });
 
-
+        doc.moveDown();
+        doc.moveDown();
         doc.moveDown();
         doc.moveDown();
 
@@ -68,8 +68,6 @@ class pdfUtils {
         doc.text('Bairro: Saraiva', { align: 'left', fontSize: 15 });
         doc.moveDown();
         doc.text('Cidade: Uberlândia', { align: 'left', fontSize: 15 });
-        doc.moveDown();
-        doc.text('CEP: 38408-533', { align: 'left', fontSize: 15 });
         doc.moveDown();
         doc.text('Horario: ', { align: 'left', fontSize: 15 });
         doc.moveDown();
