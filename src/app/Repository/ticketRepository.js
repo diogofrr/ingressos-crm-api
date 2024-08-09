@@ -17,8 +17,7 @@ class ticketRepository {
     }
 
     async getAllTickets(startRow, endRow) {
-        const sql = 'SELECT * FROM tickets ORDER BY full_name LIMIT ' + endRow + ' OFFSET ' + startRow;
-        console.log(sql);
+        const sql = 'SELECT id, (SELECT full_name FROM users WHERE seller_id = id) seller, full_name, telephone, birth_date, cpf, qrcode, status, created_at, update_at, update_by FROM tickets ORDER BY full_name LIMIT ' + endRow + ' OFFSET ' + startRow;
 
         return new Promise((resolve, reject) => {
             conexao.query(sql,(error, result) => {
