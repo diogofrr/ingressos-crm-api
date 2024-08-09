@@ -49,25 +49,19 @@ class pdfUtils {
         });
 
         // Adicionar imagem ao lado direito do título
-        const imageX = titleX + titleWidth + 10; // Posiciona a imagem após o título com uma margem de 10 unidades
+        const imageX = titleX + titleWidth + 200; // Posiciona a imagem após o título com uma margem de 10 unidades
         const imageY = doc.y - 25; // Mantém a imagem alinhada verticalmente com o título
         doc.image(imagePath, imageX, imageY, {
             fit: [50, 50], // Ajuste o tamanho da imagem conforme necessário
             valign: 'center'
         });
 
-        // // Adicionando título
-        // doc.fontSize(25).font('Helvetica-Bold').text('SAMBA DO SEU ZÉ', {
-        //     align: 'left',
-        //     fontSize: 20,
-        //     fontWeight: 600
-        // });
 
         doc.moveDown();
         doc.moveDown();
 
         // Adicionar campos para preenchimento
-        doc.fontSize(12).font('Helvetica').text('Endereco: Rua Quintino Bocaiúva, 2607', {
+        doc.fontSize(15).font('Helvetica').text('Endereco: Rua Quintino Bocaiúva, 2607', {
             align: 'left'
         });
         doc.moveDown();
