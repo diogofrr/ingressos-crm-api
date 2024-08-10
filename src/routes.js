@@ -14,7 +14,7 @@ router.get('/tickets', jwtUtils.checkToken, ticketController.getAllTickets);
 router.post('/user', userRequest.postUser,userController.postUser);
 router.post('/login', userRequest.postLogin,userController.postLogin);
 router.post('/ticket', jwtUtils.checkToken, ticketRequest.postTicket, ticketController.postTicket);
-router.post('/teste', ticketController.teste);
+router.post('/teste', ticketController.getTicket);
 
 //PUT
 

@@ -18,10 +18,13 @@ class ticketController {
             });
         }
 
+        const newPdf = await pdfUtils.createPDF(arrDados);
+
         return res.status(200).json({
             error: false,
             msgUser: 'Ingresso cadastrado com sucesso.',
-            msgOriginal: null
+            msgOriginal: null,
+            pdf: newPdf
         });
     }
 
@@ -48,7 +51,7 @@ class ticketController {
         });
     }
 
-    async teste() {
+    async getTicket() {
         await pdfUtils.testeCriacao();
     }
 }

@@ -18,10 +18,11 @@ class utilRepository {
 
     async verifyCPF(cpf)
     {
-        const sql = 'SELECT * FROM users WHERE cpf = ?';
+        const sql = 'SELECT * FROM tickets WHERE cpf = ?';
 
         return new Promise((resolve, reject) => {
             conexao.query(sql,cpf,(error, result) => {
+                console.log(error)
                 if (error) return reject(false);
 
                 const row = JSON.parse(JSON.stringify(result));
