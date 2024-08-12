@@ -30,7 +30,7 @@ class ticketRepository {
     }
 
     async getTicket(id) {
-        const sql = 'SELECT * FROM tickets WHERE = ?';
+        const sql = 'SELECT * FROM tickets WHERE id = ?';
 
         return new Promise((resolve, reject) => {
             conexao.query(sql,id,(error, result) => {

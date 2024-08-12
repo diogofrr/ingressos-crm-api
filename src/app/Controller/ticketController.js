@@ -29,8 +29,8 @@ class ticketController {
     }
 
     async getAllTickets(req, res) {
-        const startRow = (req.body.start_row) ? req.body.start_row : 0;
-        const endRow   = (req.body.end_row)   ? req.body.end_row   : 10; 
+        const startRow = (req.query.start_row) ? req.query.start_row : 0;
+        const endRow   = (req.query.end_row)   ? req.query.end_row   : 10; 
         let arrDados   = [];
 
         try {
@@ -43,7 +43,7 @@ class ticketController {
             });
         }
 
-        return res.status(400).json({
+        return res.status(200).json({
             error: false,
             msgUser: null,
             msgOriginal: null,
@@ -51,8 +51,29 @@ class ticketController {
         });
     }
 
-    async getTicket() {
-        await pdfUtils.testeCriacao();
+    async getTicket(req,res) {
+
+        const id     = req.query.id;
+        let arrDados = [];
+        
+        try {
+            arrDados = await ticketRepository.getTicket(id);
+        } catch (error) {
+            return res.status(400).json({
+                error: true,
+                msgUser: 'Desculpe, ocorreu um erro ao buscar ingresso. Tente novamente.',
+                msgOriginal: 'Erro ao buscar ingressos.'
+            });
+        } 
+
+        const pdf = await pdfUtils.createPDF(arrDados[0]);
+
+        return res.status(200).json({
+            error: false,
+            msgUser: null,
+            msgOriginal: null,
+            pdf: pdf
+        });
     }
 }
 

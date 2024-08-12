@@ -40,6 +40,25 @@ class ticketRequest {
 
         next();
     }
+
+    async getTicket(req, res, next)
+    {
+        let msg = '';
+
+        if (!req.query.id) {
+            msg = 'Parametro id é obrigatorio.';
+        }
+
+        if(msg) {
+            return res.status(400).json({
+                error: true,
+                msgUser: msg,
+                msgOriginal: msg
+            });
+        }
+
+        next();
+    }
 }
 
 export default new ticketRequest();
