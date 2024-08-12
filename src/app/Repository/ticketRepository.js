@@ -29,6 +29,19 @@ class ticketRepository {
         });
     }
 
+    async getAllTotal() {
+        const sql = 'SELECT COUNT(*) total FROM tickets';
+
+        return new Promise((resolve, reject) => {
+            conexao.query(sql,(error, result) => {
+                if (error) return reject(false);
+
+                const row = JSON.parse(JSON.stringify(result));
+                return resolve(row);    
+            });
+        });
+    }
+
     async getTicket(id) {
         const sql = 'SELECT * FROM tickets WHERE id = ?';
 
@@ -38,6 +51,34 @@ class ticketRepository {
 
                 const row = JSON.parse(JSON.stringify(result));
                 return resolve(row);    
+            });
+        });
+    }
+
+    async getTicketHash(hash) {
+        const sql = 'SELECT * FROM tickets WHERE qrcode = ?';
+
+        return new Promise((resolve, reject) => {
+            conexao.query(sql,hash,(error, result) => {
+                if (error) return reject(false);
+
+                const row = JSON.parse(JSON.stringify(result));
+                return resolve(row);    
+            });
+        });
+    }
+
+    async updateStatusTicket(id, status)
+    {
+        const sql = 'UPDATE tickets SET status = ? WHERE id = ?';
+
+        return new Promise((resolve, reject) => {
+            conexao.query(sql,[status, id],(error, result) => {
+                console.log(error);
+                if (error) return reject(false);
+
+                const row = JSON.parse(JSON.stringify(result));
+                return resolve(row);
             });
         });
     }

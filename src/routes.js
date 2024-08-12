@@ -15,10 +15,10 @@ router.get('/ticket', jwtUtils.checkToken, ticketRequest.getTicket, ticketContro
 router.post('/user', userRequest.postUser,userController.postUser);
 router.post('/login', userRequest.postLogin,userController.postLogin);
 router.post('/ticket', jwtUtils.checkToken, ticketRequest.postTicket, ticketController.postTicket);
-router.post('/teste', ticketController.getTicket);
+router.post('/validate', jwtUtils.checkToken, ticketRequest.validate, ticketController.validate);
 
 //PUT
-
+router.put('/del-ticket', jwtUtils.checkToken, ticketRequest.delTicket, ticketController.delTicket)
 
 
 //DELETE

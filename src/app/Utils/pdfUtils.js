@@ -41,10 +41,10 @@ class pdfUtils {
             const titulo = 'SAMBA DO SEU ZÉ';
             doc.fontSize(25).font('Helvetica-Bold');
             const titleWidth = doc.widthOfString(titulo);
-            const titleX = doc.x; 
+            const titleX     = doc.x; 
             const __filename = fileURLToPath(import.meta.url);
-            const __dirname = path.dirname(__filename);
-            const imagePath = path.resolve(__dirname, '../img/fundoIngresso.png');
+            const __dirname  = path.dirname(__filename);
+            const imagePath  = path.resolve(__dirname, '../img/fundoIngresso.png');
     
             doc.text(titulo, { align: 'left' });
     

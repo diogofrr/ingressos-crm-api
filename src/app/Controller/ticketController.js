@@ -43,11 +43,16 @@ class ticketController {
             });
         }
 
+        const total = await ticketRepository.getAllTotal();
+
         return res.status(200).json({
             error: false,
             msgUser: null,
             msgOriginal: null,
-            result: arrDados
+            result: {
+                total: total[0].total,
+                tickets : arrDados
+            }
         });
     }
 
@@ -74,6 +79,77 @@ class ticketController {
             msgOriginal: null,
             pdf: pdf
         });
+    }
+
+    async validate(req, res) {
+        let arrTicket = [];
+        let verify    = false;
+
+        try {
+            arrTicket = await ticketRepository.getTicketHash(req.body.hash);
+            verify    = (!arrTicket[0]) ? true : false;
+        } catch (error) {
+            return res.status(400).json({
+                error: true,
+                msgUser: 'Desculpe, ocorreu um erro ao validar ingresso. Tente novamente.',
+                msgOriginal: 'Erro ao validar ingresso.'
+            });
+        }
+
+        if (verify) {
+            return res.status(400).json({
+                error: true,
+                msgUser: 'Desculpe, ocorreu um erro ao validar ingresso. Tente novamente.',
+                msgOriginal: 'Retorno vazio.'
+            });
+        }
+
+        if (arrTicket[0].status != 'A') {
+            const motivo = (arrTicket[0].status == 'C') ? 'cancelado.' : 'utilizado.';
+
+            return res.status(400).json({
+                error: true,
+                msgUser: 'O ingresso já foi ' + motivo,
+                msgOriginal: 'Retorno vazio.'
+            });
+        }
+
+        try {
+            await ticketRepository.updateStatusTicket(arrTicket[0].id, 'U');
+        } catch (error) {
+            return res.status(400).json({
+                error: true,
+                msgUser: 'Desculpe, ocorreu um erro ao validar ingresso. Tente novamente.',
+                msgOriginal: 'Erro ao validar ingresso.'
+            });
+        }
+
+        return res.status(200).json({
+            error: false,
+            msgUser: 'Ingresso validado com sucesso.',
+            msgOriginal: null
+        });
+    }
+
+    async delTicket(req, res) {
+        const id = req.body.id;
+
+        try {
+            await ticketRepository.updateStatusTicket(id, 'C');
+        } catch (error) {
+            return res.status(400).json({
+                error: true,
+                msgUser: 'Desculpe, ocorreu um erro ao deletar ingresso. Tente novamente.',
+                msgOriginal: 'Erro ao derretar ingresso.'
+            });
+        }
+
+        return res.status(200).json({
+            error: false,
+            msgUser: 'Ingresso cancelado com sucesso.',
+            msgOriginal: null
+        });
+        
     }
 }
 
