@@ -97,5 +97,21 @@ class ticketRepository {
         });
     }
 
+    async getSearch(dados) {
+
+        const field = (dados.tag == 'cpf') ? 'cpf' : 'full_name';
+        const sql   = "SELECT * FROM tickets WHERE " + field + " LIKE '%" + dados.query + "%'";
+
+        return new Promise((resolve, reject) => {
+            conexao.query(sql,(error, result) => {
+                console.log(error);
+                if (error) return reject(false);
+
+                const row = JSON.parse(JSON.stringify(result));
+                return resolve(row);
+            });
+        });
+    }
+
 }
 export default new ticketRepository();

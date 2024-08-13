@@ -179,6 +179,24 @@ class ticketController {
             msgOriginal: null
         });
     }
+
+    async getSearch(req, res) {
+
+        let arrTickets = [];
+
+        try {
+            arrTickets = await ticketRepository.getSearch(req.query);
+        } catch(error) {
+
+        }
+        
+        return res.status(200).json({
+            error: false,
+            msgUser: null,
+            msgOriginal: null,
+            result: arrTickets
+        });
+    }
 }
 
 export default new ticketController();

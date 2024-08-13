@@ -10,6 +10,7 @@ const router  = Router();
 //GET
 router.get('/tickets', jwtUtils.checkToken, ticketController.getAllTickets);
 router.get('/ticket', jwtUtils.checkToken, ticketRequest.getTicket, ticketController.getTicket);
+router.get('/search', jwtUtils.checkToken, ticketController.getSearch);
 
 //POST
 router.post('/user', userRequest.postUser,userController.postUser);

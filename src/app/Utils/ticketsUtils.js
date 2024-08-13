@@ -50,7 +50,9 @@ class ticketsUtils {
             msg = 'Ingresso nao encontrado, Por Favor, tente novamente.';
         } else {
             if (arrTicket[0].cpf != cpf) {
-                verify = userUtils.RepeatedCPF(cpf);
+                if(await userUtils.RepeatedCPF(cpf)) {
+                    msg = 'Desculpe, o cpf fornecido já está associado a um ingresso existente.';
+                }
             }
         }
 
