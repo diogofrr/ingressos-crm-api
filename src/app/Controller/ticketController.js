@@ -132,15 +132,25 @@ class ticketController {
     }
 
     async delTicket(req, res) {
-        const id = req.body.id;
+        const id   = req.body.id;
+        let verify = false;
 
         try {
-            await ticketRepository.updateStatusTicket(id, 'C');
+            const arrResult = await ticketRepository.updateStatusTicket(id, 'C');
+            verify          = (arrResult.affectedRows != 0) ? false : true;
         } catch (error) {
             return res.status(400).json({
                 error: true,
                 msgUser: 'Desculpe, ocorreu um erro ao deletar ingresso. Tente novamente.',
-                msgOriginal: 'Erro ao derretar ingresso.'
+                msgOriginal: 'Erro ao cancelar ingresso.'
+            });
+        }
+
+        if (verify) {
+            return res.status(400).json({
+                error: true,
+                msgUser: 'Desculpe, o ingresso nao foi encontrado. Tente novamente.',
+                msgOriginal: 'Ingresso nao encontrado.'
             });
         }
 
@@ -169,7 +179,7 @@ class ticketController {
             return res.status(400).json({
                 error: true,
                 msgUser: 'Desculpe, ocorreu um erro ao atualizar ingresso. Tente novamente.',
-                msgOriginal: 'Erro ao derretar ingresso.'
+                msgOriginal: 'Erro ao atualizar ingresso.'
             });
         }
         
@@ -195,6 +205,36 @@ class ticketController {
             msgUser: null,
             msgOriginal: null,
             result: arrTickets
+        });
+    }
+
+    async aticvateTicket(req, res) {
+        const id   = req.body.id;
+        let verify = false;
+
+        try {
+            const arrResult = await ticketRepository.updateStatusTicket(id, 'A');
+            verify          = (arrResult.affectedRows != 0) ? false : true;
+        } catch (error) {
+            return res.status(400).json({
+                error: true,
+                msgUser: 'Desculpe, ocorreu um erro ao ativar ingresso. Tente novamente.',
+                msgOriginal: 'Erro ao ativar ingresso.'
+            });
+        }
+
+        if (verify) {
+            return res.status(400).json({
+                error: true,
+                msgUser: 'Desculpe, o ingresso nao foi encontrado. Tente novamente.',
+                msgOriginal: 'Ingresso nao encontrado.'
+            });
+        }
+
+        return res.status(200).json({
+            error: false,
+            msgUser: 'Ingresso ativado com sucesso.',
+            msgOriginal: null
         });
     }
 }

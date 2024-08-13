@@ -12,13 +12,12 @@ class UserUtils {
      * @returns 
      */
 
-    formatarNome(nome)
-    {
+    formatarNome(nome) {
         const arrNome = nome.split(' ');
         for (let i = 0; i < arrNome.length; i++) {
-            arrNome[i] = arrNome[i].charAt(0).toUpperCase() + arrNome[i].slice(1);
+            arrNome[i] = arrNome[i].charAt(0).toUpperCase() + arrNome[i].slice(1).toLowerCase();
         }
-
+    
         return arrNome.join(' ');
     }
     /**

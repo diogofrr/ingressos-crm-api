@@ -22,7 +22,6 @@ class utilRepository {
 
         return new Promise((resolve, reject) => {
             conexao.query(sql,cpf,(error, result) => {
-                console.log(error)
                 if (error) return reject(false);
 
                 const row = JSON.parse(JSON.stringify(result));
@@ -37,7 +36,6 @@ class utilRepository {
 
         return new Promise((resolve, reject) => {
             conexao.query(sql,telefone,(error, result) => {
-                console.log(error);
                 if (error) return reject(false);
 
                 const row = JSON.parse(JSON.stringify(result));

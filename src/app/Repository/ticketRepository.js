@@ -74,7 +74,6 @@ class ticketRepository {
 
         return new Promise((resolve, reject) => {
             conexao.query(sql,[status, id],(error, result) => {
-                console.log(error);
                 if (error) return reject(false);
 
                 const row = JSON.parse(JSON.stringify(result));
@@ -88,7 +87,6 @@ class ticketRepository {
 
         return new Promise((resolve, reject) => {
             conexao.query(sql,[dados.full_name, dados.telephone, dados.birth_date, dados.cpf, dados.update_at, dados.update_by ,dados.id],(error, result) => {
-                console.log(error);
                 if (error) return reject(false);
 
                 const row = JSON.parse(JSON.stringify(result));
@@ -104,7 +102,6 @@ class ticketRepository {
 
         return new Promise((resolve, reject) => {
             conexao.query(sql,(error, result) => {
-                console.log(error);
                 if (error) return reject(false);
 
                 const row = JSON.parse(JSON.stringify(result));
