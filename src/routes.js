@@ -18,7 +18,9 @@ router.post('/ticket', jwtUtils.checkToken, ticketRequest.postTicket, ticketCont
 router.post('/validate', jwtUtils.checkToken, ticketRequest.validate, ticketController.validate);
 
 //PUT
-router.put('/del-ticket', jwtUtils.checkToken, ticketRequest.delTicket, ticketController.delTicket)
+router.put('/del-ticket', jwtUtils.checkToken, ticketRequest.delTicket, ticketController.delTicket);
+router.put('/ticket', jwtUtils.checkToken, ticketRequest.putTicket, ticketController.putTicket);
+
 
 
 //DELETE

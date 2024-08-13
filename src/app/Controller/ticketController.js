@@ -149,7 +149,35 @@ class ticketController {
             msgUser: 'Ingresso cancelado com sucesso.',
             msgOriginal: null
         });
+    }
+
+    async putTicket(req, res) {
+        const arrDados  = await ticketsUtils.putTicket(req.body, req);
+        const verifyCPF = await ticketsUtils.verifyCPFRepetead(arrDados.id, arrDados.cpf);
+
+        if (verifyCPF) {
+            return res.status(400).json({
+                error: true,
+                msgUser: verifyCPF,
+                msgOriginal: verifyCPF
+            });
+        }
+
+        try {
+            await ticketRepository.putTicket(arrDados);
+        } catch (error) {
+            return res.status(400).json({
+                error: true,
+                msgUser: 'Desculpe, ocorreu um erro ao atualizar ingresso. Tente novamente.',
+                msgOriginal: 'Erro ao derretar ingresso.'
+            });
+        }
         
+        return res.status(200).json({
+            error: false,
+            msgUser: 'Ingresso atualizado com sucesso.',
+            msgOriginal: null
+        });
     }
 }
 

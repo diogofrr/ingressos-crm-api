@@ -97,6 +97,41 @@ class ticketRequest {
 
         next();
     }
+
+    async putTicket(req, res, next)
+    {
+        let msg = '';
+
+        if (!req.body.cpf) {
+            msg = 'Parametro cpf é obrigatorio.';
+        }
+
+        if (!req.body.birth_date) {
+            msg = 'Parametro birth_date é obrigatorio.';
+        }
+
+        if (!req.body.telephone) {
+            msg = 'Parametro telephone é obrigatorio.';
+        }
+
+        if (!req.body.full_name) {
+            msg = 'Parametro full_name é obrigatorio.';
+        }
+
+        if (!req.body.id) {
+            msg = 'Parametro id é obrigatorio.';
+        }
+
+        if(msg) {
+            return res.status(400).json({
+                error: true,
+                msgUser: msg,
+                msgOriginal: msg
+            });
+        }
+
+        next();
+    }
 }
 
 export default new ticketRequest();

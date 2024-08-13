@@ -83,5 +83,19 @@ class ticketRepository {
         });
     }
 
+    async putTicket(dados) {
+        const sql = 'UPDATE tickets SET full_name = ?, telephone = ?, birth_date = ?, cpf = ?, update_at = ?, update_by = ? WHERE id = ?';
+
+        return new Promise((resolve, reject) => {
+            conexao.query(sql,[dados.full_name, dados.telephone, dados.birth_date, dados.cpf, dados.update_at, dados.update_by ,dados.id],(error, result) => {
+                console.log(error);
+                if (error) return reject(false);
+
+                const row = JSON.parse(JSON.stringify(result));
+                return resolve(row);
+            });
+        });
+    }
+
 }
 export default new ticketRepository();
