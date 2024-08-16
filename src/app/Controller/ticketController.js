@@ -45,7 +45,7 @@ class ticketController {
             });
         }
 
-        const total = await ticketRepository.getAllTotal();
+        const total = (!query) ? await ticketRepository.getAllTotal() : await ticketRepository.getAllTotalLike(query, tag);
 
         return res.status(200).json({
             error: false,

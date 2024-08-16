@@ -161,5 +161,22 @@ class ticketRepository {
         });
     }
 
+    async getAllTotalLike(query, tag) {
+        const field = (tag === 'cpf') ? 'cpf' : 'full_name';
+        const tr    = (field == 'cpf') ? " WHERE cpf LIKE '%" + query + "%'" : " WHERE full_name LIKE '%" + query + "%'" ;
+
+        const sql = 'SELECT COUNT(*) total FROM tickets ' + tr;
+
+        return new Promise((resolve, reject) => {
+            conexao.query(sql,(error, result) => {
+                console.log(error);
+                if (error) return reject(false);
+
+                const row = JSON.parse(JSON.stringify(result));
+                return resolve(row);    
+            });
+        });
+    }
+
 }
 export default new ticketRepository();
