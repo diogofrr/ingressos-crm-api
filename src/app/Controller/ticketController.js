@@ -31,10 +31,12 @@ class ticketController {
     async getAllTickets(req, res) {
         const startRow = (req.query.start_row) ? req.query.start_row : 0;
         const endRow   = (req.query.end_row)   ? req.query.end_row   : 10; 
+        const query    = (req.query.query)     ? req.query.query     : '';
+        const tag      = (req.query.tag)       ? req.query.tag       : '';
         let arrDados   = [];
 
         try {
-            arrDados = await ticketRepository.getAllTickets(startRow, endRow);
+            arrDados = await ticketRepository.getAllTickets(startRow, endRow, query, tag);
         } catch (error) {
             return res.status(400).json({
                 error: true,
@@ -193,9 +195,11 @@ class ticketController {
     async getSearch(req, res) {
 
         let arrTickets = [];
+        const startRow = req.query.start_row;
+        const endRow = req.query.end_row;
 
         try {
-            arrTickets = await ticketRepository.getSearch(req.query);
+            arrTickets = await ticketRepository.getSearch(req.query, startRow, endRow);
         } catch(error) {
 
         }

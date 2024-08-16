@@ -16,8 +16,37 @@ class ticketRepository {
         });
     }
 
-    async getAllTickets(startRow, endRow) {
-        const sql = 'SELECT id, (SELECT full_name FROM users WHERE seller_id = id) seller, full_name, telephone, birth_date, cpf, qrcode, status, created_at, update_at, update_by FROM tickets ORDER BY full_name LIMIT ' + endRow + ' OFFSET ' + startRow;
+    async getAllTickets(startRow, endRow, query, tag) {
+        let tr = '';
+        if (tag) {
+            const field = (tag === 'cpf') ? 'cpf' : 'full_name';
+            tr          = (field == 'cpf') ? " WHERE t.cpf LIKE '%" + query + "%'" : " WHERE t.full_name LIKE '%" + query + "%'" ;
+        }
+        console
+        const sql = 'WITH OrderedTickets AS ('
+           + 'SELECT t.id, ' 
+           + 'u.full_name AS seller,' 
+           + 't.full_name,' 
+           + 't.telephone,' 
+           + 't.birth_date,' 
+           + 't.cpf,' 
+           + 't.qrcode,' 
+           + 't.status,' 
+           + 't.created_at,' 
+           + 't.update_at,' 
+           + 't.update_by,'
+           + 'ROW_NUMBER() OVER (ORDER BY t.full_name, t.id) AS row_num'
+      + ' FROM tickets t'
+      + ' LEFT JOIN users u ON u.id = t.seller_id'
+      + tr 
+        +')'
+        + ' SELECT id, seller, full_name, telephone, birth_date, cpf, qrcode, status, created_at, update_at, update_by'
+        + ' FROM OrderedTickets'
+        + ' WHERE row_num > ' + startRow
+        + ' AND row_num <= ' + endRow
+        + ' ORDER BY row_num';
+
+        console.log(sql);
 
         return new Promise((resolve, reject) => {
             conexao.query(sql,(error, result) => {
@@ -95,15 +124,37 @@ class ticketRepository {
         });
     }
 
-    async getSearch(dados) {
-
-        const field = (dados.tag == 'cpf') ? 'cpf' : 'full_name';
-        const sql   = "SELECT * FROM tickets WHERE " + field + " LIKE '%" + dados.query + "%'";
-
+    async getSearch(dados, startRow, endRow) {
+        const field = (dados.tag === 'cpf') ? 'cpf' : 'full_name';
+        const sql = `
+            WITH FilteredTickets AS (
+                SELECT t.id, 
+                       u.full_name AS seller, 
+                       t.full_name, 
+                       t.telephone, 
+                       t.birth_date, 
+                       t.cpf, 
+                       t.qrcode, 
+                       t.status, 
+                       t.created_at, 
+                       t.update_at, 
+                       t.update_by,
+                       ROW_NUMBER() OVER (ORDER BY t.full_name, t.id) AS row_num
+                  FROM tickets t
+                  LEFT JOIN users u ON u.id = t.seller_id
+                 WHERE t.${field} LIKE '%${dados.query}%'
+            )
+            SELECT id, seller, full_name, telephone, birth_date, cpf, qrcode, status, created_at, update_at, update_by
+              FROM FilteredTickets
+             WHERE row_num > '%${startRow}%'
+               AND row_num <= '%${endRow}%'
+             ORDER BY row_num;
+        `;
+    
         return new Promise((resolve, reject) => {
-            conexao.query(sql,(error, result) => {
+            conexao.query(sql, (error, result) => {
                 if (error) return reject(false);
-
+    
                 const row = JSON.parse(JSON.stringify(result));
                 return resolve(row);
             });

@@ -21,7 +21,7 @@ router.post('/validate', jwtUtils.checkToken, ticketRequest.validate, ticketCont
 //PUT
 router.put('/del-ticket', jwtUtils.checkToken, ticketRequest.delTicket, ticketController.delTicket);
 router.put('/ticket', jwtUtils.checkToken, ticketRequest.putTicket, ticketController.putTicket);
-router.put('/aticvate', jwtUtils.checkToken, ticketRequest.aticvateTicket, ticketController.aticvateTicket);
+router.put('/activate', jwtUtils.checkToken, ticketRequest.aticvateTicket, ticketController.aticvateTicket);
 
 
 
