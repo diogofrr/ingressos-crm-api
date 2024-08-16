@@ -22,7 +22,7 @@ class ticketRepository {
             const field = (tag === 'cpf') ? 'cpf' : 'full_name';
             tr          = (field == 'cpf') ? " WHERE t.cpf LIKE '%" + query + "%'" : " WHERE t.full_name LIKE '%" + query + "%'" ;
         }
-        console
+
         const sql = 'WITH OrderedTickets AS ('
            + 'SELECT t.id, ' 
            + 'u.full_name AS seller,' 
