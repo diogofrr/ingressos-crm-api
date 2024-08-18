@@ -23,12 +23,6 @@ router.put('/del-ticket', jwtUtils.checkToken, ticketRequest.delTicket, ticketCo
 router.put('/ticket', jwtUtils.checkToken, ticketRequest.putTicket, ticketController.putTicket);
 router.put('/activate', jwtUtils.checkToken, ticketRequest.aticvateTicket, ticketController.aticvateTicket);
 
-
-
-//DELETE
-
-
-
 router.use((req, res) => {res.status(404).json({error: true,msgUser: "Rota não encontrada.",msgOriginal: "Rota não encontrada." })});
 
 export default router 

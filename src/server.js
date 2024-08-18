@@ -6,5 +6,5 @@ const PORT = process.env.PORT;
 // fazer a conexao
 
 app.listen(PORT, () => {
-    console.log('estou rodando')
+    console.log(`Servidor iniciado na porta ${PORT}`)
 })

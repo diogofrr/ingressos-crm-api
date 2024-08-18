@@ -13,7 +13,7 @@ class ticketController {
         } catch (error) {
             return res.status(400).json({
                 error: true,
-                msgUser: 'Desculpe, ocorreu um erro ao tentar cadastrar o ingresso. Verifique se todas as informações estão corretas e tente novamente.',
+                msgUser: 'Ocorreu um erro ao tentar cadastrar o ingresso. Verifique as informações e tente novamente.',
                 msgOriginal: 'Erro ao inserir ingresso na tabela tickets'
             });
         }
@@ -40,7 +40,7 @@ class ticketController {
         } catch (error) {
             return res.status(400).json({
                 error: true,
-                msgUser: 'Desculpe, ocorreu um erro ao buscar ingressos. Tente novamente.',
+                msgUser: 'Ocorreu um erro ao buscar ingressos.',
                 msgOriginal: 'Erro ao buscar ingressos.'
             });
         }
@@ -68,7 +68,7 @@ class ticketController {
         } catch (error) {
             return res.status(400).json({
                 error: true,
-                msgUser: 'Desculpe, ocorreu um erro ao buscar ingresso. Tente novamente.',
+                msgUser: 'Ocorreu um erro ao buscar ingresso.',
                 msgOriginal: 'Erro ao buscar ingressos.'
             });
         } 
@@ -93,7 +93,7 @@ class ticketController {
         } catch (error) {
             return res.status(400).json({
                 error: true,
-                msgUser: 'Desculpe, ocorreu um erro ao validar ingresso. Tente novamente.',
+                msgUser: 'Ocorreu um erro ao validar ingresso.',
                 msgOriginal: 'Erro ao validar ingresso.'
             });
         }
@@ -101,7 +101,7 @@ class ticketController {
         if (verify) {
             return res.status(400).json({
                 error: true,
-                msgUser: 'Desculpe, ocorreu um erro ao validar ingresso. Tente novamente.',
+                msgUser: 'Ocorreu um erro ao validar ingresso.',
                 msgOriginal: 'Retorno vazio.'
             });
         }
@@ -121,7 +121,7 @@ class ticketController {
         } catch (error) {
             return res.status(400).json({
                 error: true,
-                msgUser: 'Desculpe, ocorreu um erro ao validar ingresso. Tente novamente.',
+                msgUser: 'Ocorreu um erro ao validar ingresso.',
                 msgOriginal: 'Erro ao validar ingresso.'
             });
         }
@@ -143,7 +143,7 @@ class ticketController {
         } catch (error) {
             return res.status(400).json({
                 error: true,
-                msgUser: 'Desculpe, ocorreu um erro ao deletar ingresso. Tente novamente.',
+                msgUser: 'Ocorreu um erro ao deletar ingresso.',
                 msgOriginal: 'Erro ao cancelar ingresso.'
             });
         }
@@ -151,7 +151,7 @@ class ticketController {
         if (verify) {
             return res.status(400).json({
                 error: true,
-                msgUser: 'Desculpe, o ingresso nao foi encontrado. Tente novamente.',
+                msgUser: 'Ingresso não encontrado.',
                 msgOriginal: 'Ingresso nao encontrado.'
             });
         }
@@ -180,7 +180,7 @@ class ticketController {
         } catch (error) {
             return res.status(400).json({
                 error: true,
-                msgUser: 'Desculpe, ocorreu um erro ao atualizar ingresso. Tente novamente.',
+                msgUser: 'Ocorreu um erro ao atualizar ingresso.',
                 msgOriginal: 'Erro ao atualizar ingresso.'
             });
         }
@@ -222,7 +222,7 @@ class ticketController {
         } catch (error) {
             return res.status(400).json({
                 error: true,
-                msgUser: 'Desculpe, ocorreu um erro ao ativar ingresso. Tente novamente.',
+                msgUser: 'Ocorreu um erro ao ativar ingresso.',
                 msgOriginal: 'Erro ao ativar ingresso.'
             });
         }
@@ -230,7 +230,7 @@ class ticketController {
         if (verify) {
             return res.status(400).json({
                 error: true,
-                msgUser: 'Desculpe, o ingresso nao foi encontrado. Tente novamente.',
+                msgUser: 'Ingresso não encontrado.',
                 msgOriginal: 'Ingresso nao encontrado.'
             });
         }

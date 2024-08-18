@@ -14,7 +14,7 @@ class userController {
         }catch(error) {
             return res.status(400).json({
                 error: true,
-                msgUser: 'Desculpe, ocorreu um erro ao tentar inserir seus dados para o cadastro. Verifique se todas as informações estão corretas e tente novamente. Se o problema persistir, entre em contato conosco para assistência.',
+                msgUser: 'Ocorreu um erro ao tentar inserir seus dados para o cadastro. Verifique se todas as informações estão corretas e tente novamente.',
                 msgOriginal: 'Erro ao inserir usuario na tabela pacientes'
             });
         }
@@ -35,7 +35,7 @@ class userController {
         if (!hashPass) {
             return res.status(400).json({
                 error: true,
-                msgUser: 'Email ou senha incorretos. Por favor, verifique suas credenciais e tente novamente. ',
+                msgUser: 'Email ou senha incorretos.',
                 msgOriginal: 'Dados incorretos.'
             });
         }
@@ -45,7 +45,7 @@ class userController {
         if (!verify) {
             return res.status(400).json({
                 error: true,
-                msgUser: 'Email ou senha incorretos. Por favor, verifique suas credenciais e tente novamente. ',
+                msgUser: 'Email ou senha incorretos.',
                 msgOriginal: 'Dados incorretos.'
             });
         } 

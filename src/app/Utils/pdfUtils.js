@@ -3,7 +3,6 @@ import QRCode from 'qrcode';
 import { Buffer } from 'buffer';
 import { fileURLToPath } from 'url'
 import path from 'path';
-import fs from 'fs';
 
 class pdfUtils {
 

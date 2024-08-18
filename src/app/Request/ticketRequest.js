@@ -33,7 +33,7 @@ class ticketRequest {
         if (await UserUtils.RepeatedCPF(req.body.cpf)) {
             return res.status(400).json({
                 error: true,
-                msgUser: 'Desculpe, o cpf fornecido já está associado a um ingresso existente.',
+                msgUser: 'O CPF fornecido já está associado a um ingresso existente.',
                 msgOriginal: 'Cpf já consta na base de dados.'
             });
         }

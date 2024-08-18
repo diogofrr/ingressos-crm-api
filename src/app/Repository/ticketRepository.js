@@ -46,8 +46,6 @@ class ticketRepository {
         + ' AND row_num <= ' + endRow
         + ' ORDER BY row_num';
 
-        console.log(sql);
-
         return new Promise((resolve, reject) => {
             conexao.query(sql,(error, result) => {
                 if (error) return reject(false);
