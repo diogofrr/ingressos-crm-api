@@ -7,8 +7,12 @@ const app = express();
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minuto
   max: 30,
+  validate: {
+    xForwardedForHeader: false, // Desabilita a verificação do cabeçalho X-Forwarded-For
+  },
 });
 
+app.set('trust proxy', true);
 app.options('*', cors());
 app.use(cors());
 app.use(express.json());
