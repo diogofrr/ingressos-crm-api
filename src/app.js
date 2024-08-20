@@ -12,7 +12,7 @@ const limiter = rateLimit({
   },
 });
 
-app.set('trust proxy', true);
+app.set('trust proxy', 'loopback, linklocal, uniquelocal');
 app.options('*', cors());
 app.use(cors());
 app.use(express.json());
