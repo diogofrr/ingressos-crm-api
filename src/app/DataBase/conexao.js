@@ -13,8 +13,10 @@ const config = {
   queueLimit: 0
 };
 
+let connection;
+
 function handleDisconnect() {
-  const connection = mysql.createConnection(config);
+  connection = mysql.createConnection(config);
 
   connection.connect((err) => {
     if (err) {
@@ -45,9 +47,13 @@ function handleDisconnect() {
 
   // Mantém a conexão ativa enviando consultas "keep-alive" a cada 1 hora
   setInterval(() => {
-    connection.query('SELECT 1', (err) => {
-      if (err) console.error("Erro ao enviar keep-alive query:", err);
-    });
+    if (connection && connection.state !== 'disconnected') {
+      connection.query('SELECT 1', (err) => {
+        if (err) console.error("Erro ao enviar keep-alive query:", err);
+      });
+    } else {
+      console.log("Tentativa de enviar keep-alive, mas a conexão está fechada.");
+    }
   }, 60 * 60 * 1000); // 1 hora
 
   return connection;
