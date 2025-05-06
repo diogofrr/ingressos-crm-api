@@ -75,7 +75,7 @@ class pdfUtils {
             // Informações de data e hora
             doc.fontSize(12)
                .font('Helvetica')
-               .text('DATA: 07/06/2025 - 16H ÀS 00', 85, 345);
+               .text('DATA: 07/06/2025 - 16H ÀS 00H', 85, 345);
             
             // Informações do local
             doc.fontSize(12)
