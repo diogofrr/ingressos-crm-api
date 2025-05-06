@@ -37,7 +37,7 @@ class pdfUtils {
                 }
             });
     
-            const titulo = 'SAMBA DO SEU ZÉ';
+            const titulo = 'ARRAIÁ CRM';
             doc.fontSize(25).font('Helvetica-Bold');
             const titleWidth = doc.widthOfString(titulo);
             const titleX     = doc.x; 
@@ -62,7 +62,7 @@ class pdfUtils {
     
             doc.fontSize(12).font('Helvetica').text('LOCAL: R. QUINTINO BOCAIÚVA, 2607- SARAIVA, UBERLÂNDIA/MG', { align: 'left' });
             doc.moveDown();
-            doc.text('DATA: 14/09/2024 - 16H ÀS 00', { align: 'left', fontSize: 12 });
+            doc.text('DATA: 07/06/2025 - 16H ÀS 00H', { align: 'left', fontSize: 12 });
             doc.moveDown();
             doc.moveDown();
     
