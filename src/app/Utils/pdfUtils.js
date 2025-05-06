@@ -22,7 +22,11 @@ class pdfUtils {
     
         // Criar uma Promise para aguardar a conclusão do PDF
         return new Promise((resolve, reject) => {
-            const doc = new PDFDocument();
+            // Configuração do PDF
+            const doc = new PDFDocument({
+                margins: { top: 50, bottom: 50, left: 50, right: 50 },
+                size: [595.28, 841.89] // Tamanho A4
+            });
     
             let buffers = [];
             doc.on('data', buffers.push.bind(buffers));
@@ -36,53 +40,72 @@ class pdfUtils {
                     reject(error); // Rejeite a Promise em caso de erro
                 }
             });
-    
-            const titulo = 'ARRAIÁ CRM';
-            doc.fontSize(25).font('Helvetica-Bold');
-            const titleWidth = doc.widthOfString(titulo);
-            const titleX     = doc.x; 
+
+            // Desenhar borda externa do ingresso
+            doc.rect(50, 50, doc.page.width - 100, doc.page.height - 100)
+               .stroke('#000000');
+            
+            // Carregar e adicionar a imagem do logo
             const __filename = fileURLToPath(import.meta.url);
-            const __dirname  = path.dirname(__filename);
-            const imagePath  = path.resolve(__dirname, '../img/fundoIngresso.png');
-    
-            doc.text(titulo, { align: 'left' });
-    
-            const imageX = titleX + titleWidth + 200;
-            const imageY = doc.y - 50;
-            doc.image(imagePath, imageX, imageY, { fit: [50, 50], valign: 'center' });
-    
-            doc.moveDown();
-            doc.moveDown();
-            doc.moveDown();
-    
-            doc.fontSize(10).font('Helvetica').text('Apresente este voucher no dia do evento, acompanhado de documento com foto.', { align: 'left' });
-    
-            doc.moveDown();
-            doc.moveDown();
-    
-            doc.fontSize(12).font('Helvetica').text('LOCAL: R. QUINTINO BOCAIÚVA, 2607- SARAIVA, UBERLÂNDIA/MG', { align: 'left' });
-            doc.moveDown();
-            doc.text('DATA: 07/06/2025 - 16H ÀS 00H', { align: 'left', fontSize: 12 });
-            doc.moveDown();
-            doc.moveDown();
-    
-            doc.fontSize(15).font('Helvetica-Bold').text('Dados do Comprador:', { align: 'left' });
-            doc.moveDown();
-            doc.fontSize(12).font('Helvetica').text('Nome: ' + dados.full_name, { align: 'left' });
-            doc.moveDown();
-            doc.text('CPF: ' + dados.cpf, { align: 'left' });
-            doc.moveDown();
-            doc.text('Telefone: ' + dados.telephone, { align: 'left' });
-            doc.moveDown();
-            doc.moveDown();
-            doc.moveDown();
-    
-            doc.rect(40, 40, 520, 720).stroke();
-    
-            doc.fontSize(14).font('Helvetica-Bold').text('QR CODE', { align: 'left' });
-            doc.translate(-32, 0);
-            doc.image(Buffer.from(qrCodeBase64.split(',')[1], 'base64'), { fit: [250, 300], align: 'left', valign: 'left' });
-    
+            const __dirname = path.dirname(__filename);
+            const logoPath = path.resolve(__dirname, '../img/fundoIngresso.png');
+            
+            try {
+                // Logo centralizado no topo
+                doc.image(logoPath, (doc.page.width - 200) / 2, 70, { fit: [200, 200] });
+            } catch (error) {
+                console.error('Erro ao carregar imagem do logo:', error);
+            }
+            
+            // Texto de apresentação do voucher
+            doc.fontSize(12)
+               .font('Helvetica')
+               .text('Apresente este voucher no dia do evento, acompanhado de documento com foto.', 
+                    50, 280, { width: doc.page.width - 100, align: 'center' });
+            
+            // Caixa de informações do evento
+            doc.rect(75, 310, doc.page.width - 150, 100)
+               .stroke('#000000');
+            
+            // Título do evento dentro da caixa
+            doc.fontSize(14)
+               .font('Helvetica-Bold')
+               .text('ARRAIÁ CRM', 85, 325);
+            
+            // Informações de data e hora
+            doc.fontSize(12)
+               .font('Helvetica')
+               .text('DATA: 07/06/2025 - 16H ÀS 00', 85, 345);
+            
+            // Informações do local
+            doc.fontSize(12)
+               .font('Helvetica')
+               .text('LOCAL: R. QUINTINO BOCAIÚVA, 2607- SARAIVA', 85, 365)
+               .text('UBERLÂNDIA/MG', 85, 385);
+            
+            // Caixa para QR Code e dados do comprador
+            doc.rect(75, 450, doc.page.width - 150, 150)
+               .stroke('#000000');
+            
+            // QR Code à esquerda
+            doc.image(Buffer.from(qrCodeBase64.split(',')[1], 'base64'), 
+                     90, 465, { fit: [120, 120] });
+            
+            // Dados do comprador à direita do QR Code
+            const infoX = 230;
+            
+            doc.fontSize(12)
+               .font('Helvetica')
+               .text('Nome: ' + dados.full_name, infoX, 480);
+            
+            doc.fontSize(12)
+               .font('Helvetica')
+               .text('CPF: ' + dados.cpf, infoX, 505);
+            
+            doc.fontSize(12)
+               .font('Helvetica')
+               .text('Telefone: ' + dados.telephone, infoX, 530);
+            
             doc.end();
         });
     }
