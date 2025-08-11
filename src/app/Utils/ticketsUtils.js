@@ -67,18 +67,28 @@ class ticketsUtils {
     const arrTicket = await ticketRepository.getTicket(id);
     let msg = "";
 
-    if (!arrTicket[0]) {
-      msg = "Ingresso nao encontrado, Por Favor, tente novamente.";
+    if (!arrTicket) {
+      msg = "Ingresso não encontrado, Por Favor, tente novamente.";
     } else {
-      if (arrTicket[0].cpf != cpf) {
+      if (arrTicket.cpf != cpf) {
         if (await userUtils.RepeatedCPF(cpf)) {
           msg =
-            "Desculpe, o cpf fornecido já está associado a um ingresso existente.";
+            "Desculpe, o CPF fornecido já está associado a um ingresso existente.";
         }
       }
     }
 
     return msg;
+  }
+
+  getEventInfo() {
+    return {
+      title: "ARRAIÁ CRM",
+      date: "07/06/2025",
+      time: "16H ÀS 00H",
+      addressLine1: "R. QUINTINO BOCAIÚVA, 2607- SARAIVA",
+      addressLine2: "UBERLÂNDIA/MG",
+    };
   }
 }
 

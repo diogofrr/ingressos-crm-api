@@ -1,5 +1,4 @@
 import ticketRepository from "../Repository/ticketRepository.js";
-import pdfUtils from "../Utils/pdfUtils.js";
 import ticketsUtils from "../Utils/ticketsUtils.js";
 
 class ticketController {
@@ -7,7 +6,16 @@ class ticketController {
     const arrDados = await ticketsUtils.postNewTicket(req.body, req);
 
     try {
-      await ticketRepository.postTicket(arrDados);
+      const created = await ticketRepository.postTicket(arrDados);
+      return res.status(201).json({
+        error: false,
+        msgUser: "Ingresso cadastrado com sucesso.",
+        msgOriginal: null,
+        result: {
+          ticket: created,
+          event: ticketsUtils.getEventInfo(),
+        },
+      });
     } catch (error) {
       return res.status(400).json({
         error: true,
@@ -16,15 +24,6 @@ class ticketController {
         msgOriginal: "Erro ao inserir ingresso na tabela tickets",
       });
     }
-
-    const newPdf = await pdfUtils.createPDF(arrDados);
-
-    return res.status(201).json({
-      error: false,
-      msgUser: "Ingresso cadastrado com sucesso.",
-      msgOriginal: null,
-      pdf: newPdf,
-    });
   }
 
   async getAllTickets(req, res) {
@@ -76,13 +75,14 @@ class ticketController {
         });
       }
 
-      const pdf = await pdfUtils.createPDF(arrDados[0]);
-
       return res.status(200).json({
         error: false,
         msgUser: null,
         msgOriginal: null,
-        pdf: pdf,
+        result: {
+          ticket,
+          event: ticketsUtils.getEventInfo(),
+        },
       });
     } catch (error) {
       return res.status(400).json({
@@ -94,12 +94,36 @@ class ticketController {
   }
 
   async validate(req, res) {
-    let arrTicket = [];
-    let verify = false;
-
     try {
-      arrTicket = await ticketRepository.getTicketHash(req.body.hash);
-      verify = !arrTicket[0] ? true : false;
+      const ticket = await ticketRepository.getTicketHash(req.body.hash);
+
+      if (!ticket) {
+        return res.status(400).json({
+          error: true,
+          msgUser: "Ingresso não encontrado.",
+          msgOriginal: "Ingresso nao encontrado.",
+        });
+      }
+
+      if (ticket.status != "A") {
+        return res.status(400).json({
+          error: true,
+          msgUser: "Este ingresso está inativo ou já foi utilizado.",
+          msgOriginal: "Ingresso inativo ou utilizado.",
+        });
+      }
+
+      const result = await ticketRepository.updateStatusTicket(ticket.id, "U");
+
+      if (!result) {
+        throw new Error("Erro ao validar ingresso.");
+      }
+
+      return res.status(200).json({
+        error: false,
+        msgUser: "Ingresso validado com sucesso.",
+        msgOriginal: null,
+      });
     } catch (error) {
       return res.status(400).json({
         error: true,
@@ -107,40 +131,6 @@ class ticketController {
         msgOriginal: "Erro ao validar ingresso.",
       });
     }
-
-    if (verify) {
-      return res.status(400).json({
-        error: true,
-        msgUser: "Ocorreu um erro ao validar ingresso.",
-        msgOriginal: "Retorno vazio.",
-      });
-    }
-
-    if (arrTicket[0].status != "A") {
-      const motivo = arrTicket[0].status == "C" ? "cancelado." : "utilizado.";
-
-      return res.status(400).json({
-        error: true,
-        msgUser: "O ingresso já foi " + motivo,
-        msgOriginal: "Retorno vazio.",
-      });
-    }
-
-    try {
-      await ticketRepository.updateStatusTicket(arrTicket[0].id, "U");
-    } catch (error) {
-      return res.status(400).json({
-        error: true,
-        msgUser: "Ocorreu um erro ao validar ingresso.",
-        msgOriginal: "Erro ao validar ingresso.",
-      });
-    }
-
-    return res.status(200).json({
-      error: false,
-      msgUser: "Ingresso validado com sucesso.",
-      msgOriginal: null,
-    });
   }
 
   async delTicket(req, res) {
@@ -230,12 +220,26 @@ class ticketController {
   }
 
   async activateTicket(req, res) {
-    const id = req.params.id || req.body.id;
-    let verify = false;
-
     try {
-      const arrResult = await ticketRepository.updateStatusTicket(id, "A");
-      verify = arrResult.affectedRows != 0 ? false : true;
+      const id = req.params.id || req.body.id;
+
+      const ticketExists = await ticketRepository.getTicket(id);
+
+      if (!ticketExists) {
+        return res.status(400).json({
+          error: true,
+          msgUser: "Ingresso não encontrado.",
+          msgOriginal: "Ingresso nao encontrado.",
+        });
+      }
+
+      await ticketRepository.updateStatusTicket(id, "A");
+
+      return res.status(200).json({
+        error: false,
+        msgUser: "Ingresso validado com sucesso.",
+        msgOriginal: null,
+      });
     } catch (error) {
       return res.status(400).json({
         error: true,
@@ -243,20 +247,6 @@ class ticketController {
         msgOriginal: "Erro ao ativar ingresso.",
       });
     }
-
-    if (verify) {
-      return res.status(400).json({
-        error: true,
-        msgUser: "Ingresso não encontrado.",
-        msgOriginal: "Ingresso nao encontrado.",
-      });
-    }
-
-    return res.status(200).json({
-      error: false,
-      msgUser: "Ingresso ativado com sucesso.",
-      msgOriginal: null,
-    });
   }
 }
 

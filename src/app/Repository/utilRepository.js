@@ -3,17 +3,17 @@ import prisma from "../DataBase/conexao.js";
 class utilRepository {
   async verifyEmail(email) {
     const user = await prisma.user.findUnique({ where: { email } });
-    return user ? [user] : [];
+    return user;
   }
 
   async verifyCPF(cpf) {
     const ticket = await prisma.ticket.findFirst({ where: { cpf } });
-    return ticket ? [ticket] : [];
+    return ticket;
   }
 
-  async verifyTelephone(telefone) {
+  async verifyTelephone(telephone) {
     const user = await prisma.user.findFirst({ where: { telephone } });
-    return user ? [user] : [];
+    return user;
   }
 }
 export default new utilRepository();

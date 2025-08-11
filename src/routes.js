@@ -13,18 +13,25 @@ router.post("/login", userRequest.postLogin, userController.postLogin);
 
 // Tickets (RESTful)
 router.get("/tickets", jwtUtils.checkToken, ticketController.getAllTickets);
+router.get("/tickets/search", jwtUtils.checkToken, ticketController.getSearch);
 router.get(
   "/tickets/:id",
   jwtUtils.checkToken,
   ticketRequest.getTicket,
   ticketController.getTicket
 );
-router.get("/tickets/search", jwtUtils.checkToken, ticketController.getSearch);
 router.post(
   "/tickets",
   jwtUtils.checkToken,
   ticketRequest.postTicket,
   ticketController.postTicket
+);
+
+router.post(
+  "/tickets/validate",
+  jwtUtils.checkToken,
+  ticketRequest.validate,
+  ticketController.validate
 );
 router.put(
   "/tickets/:id",
@@ -38,17 +45,11 @@ router.delete(
   ticketRequest.delTicket,
   ticketController.delTicket
 );
-router.post(
+router.put(
   "/tickets/:id/activate",
   jwtUtils.checkToken,
   ticketRequest.activateTicket,
   ticketController.activateTicket
-);
-router.post(
-  "/tickets/validate",
-  jwtUtils.checkToken,
-  ticketRequest.validate,
-  ticketController.validate
 );
 
 router.use((req, res) => {

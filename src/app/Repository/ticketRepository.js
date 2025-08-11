@@ -48,7 +48,7 @@ class ticketRepository {
 
   async getTicket(id) {
     const ticket = await prisma.ticket.findUnique({
-      where: { id: Number(id) },
+      where: { id },
     });
     return ticket;
   }
@@ -57,21 +57,20 @@ class ticketRepository {
     const ticket = await prisma.ticket.findFirst({
       where: { qrcode: String(hash) },
     });
-    return ticket ? [ticket] : [];
+    return ticket;
   }
 
   async updateStatusTicket(id, status) {
     const result = await prisma.ticket.update({
-      where: { id: Number(id) },
+      where: { id },
       data: { status: String(status) },
     });
-    // Adapter para manter consumo atual
-    return { affectedRows: result ? 1 : 0 };
+    return result;
   }
 
   async putTicket(dados) {
     const result = await prisma.ticket.update({
-      where: { id: Number(dados.id) },
+      where: { id: dados.id },
       data: {
         full_name: dados.full_name,
         telephone: dados.telephone,
@@ -85,7 +84,6 @@ class ticketRepository {
   }
 
   async getSearch(dados, startRow, endRow) {
-    const field = dados.tag === "cpf" ? "t.cpf" : "t.full_name";
     const offset = Number(startRow) || 0;
     const limit = Number(endRow) - offset || 10;
 
