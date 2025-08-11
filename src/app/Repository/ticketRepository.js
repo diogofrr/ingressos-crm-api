@@ -1,180 +1,139 @@
-import conexao from "../DataBase/conexao.js";
+import prisma from "../DataBase/conexao.js";
 
 class ticketRepository {
+  async postTicket(dados) {
+    const result = await prisma.ticket.create({ data: dados });
+    return result;
+  }
 
-    async postTicket(dados)
-    {
-        const sql = 'INSERT INTO tickets SET ?';
+  async getAllTickets(startRow, endRow, query, tag) {
+    const offset = Number(startRow) || 0;
+    const limit = Number(endRow) - offset || 10;
 
-        return new Promise((resolve, reject) => {
-            conexao.query(sql,dados,(error, result) => {
-                if (error) return reject(false);
-
-                const row = JSON.parse(JSON.stringify(result));
-                return resolve(row);    
-            });
-        });
-    }
-
-    async getAllTickets(startRow, endRow, query, tag) {
-        let tr = '';
-        if (tag) {
-            const field = (tag === 'cpf') ? 'cpf' : 'full_name';
-            tr          = (field == 'cpf') ? " WHERE t.cpf LIKE '%" + query + "%'" : " WHERE t.full_name LIKE '%" + query + "%'" ;
+    const where = query
+      ? {
+          ...(tag === "cpf"
+            ? { cpf: { contains: String(query) } }
+            : { full_name: { contains: String(query) } }),
         }
+      : {};
 
-        const sql = 'WITH OrderedTickets AS ('
-           + 'SELECT t.id, ' 
-           + 'u.full_name AS seller,' 
-           + 't.full_name,' 
-           + 't.telephone,' 
-           + 't.birth_date,' 
-           + 't.cpf,' 
-           + 't.qrcode,' 
-           + 't.status,' 
-           + 't.created_at,' 
-           + 't.update_at,' 
-           + 't.update_by,'
-           + 'ROW_NUMBER() OVER (ORDER BY t.full_name, t.id) AS row_num'
-      + ' FROM tickets t'
-      + ' LEFT JOIN users u ON u.id = t.seller_id'
-      + tr 
-        +')'
-        + ' SELECT id, seller, full_name, telephone, birth_date, cpf, qrcode, status, created_at, update_at, update_by'
-        + ' FROM OrderedTickets'
-        + ' WHERE row_num > ' + startRow
-        + ' AND row_num <= ' + endRow
-        + ' ORDER BY row_num';
+    const tickets = await prisma.ticket.findMany({
+      where,
+      orderBy: [{ full_name: "asc" }, { id: "asc" }],
+      skip: offset,
+      take: limit,
+      select: {
+        id: true,
+        full_name: true,
+        telephone: true,
+        birth_date: true,
+        cpf: true,
+        qrcode: true,
+        status: true,
+        created_at: true,
+        update_at: true,
+        update_by: true,
+        seller: { select: { full_name: true } },
+      },
+    });
 
-        return new Promise((resolve, reject) => {
-            conexao.query(sql,(error, result) => {
-                if (error) return reject(false);
+    return tickets;
+  }
 
-                const row = JSON.parse(JSON.stringify(result));
-                return resolve(row);    
-            });
-        });
-    }
+  async getAllTotal() {
+    const total = await prisma.ticket.count();
+    return total;
+  }
 
-    async getAllTotal() {
-        const sql = 'SELECT COUNT(*) total FROM tickets';
+  async getTicket(id) {
+    const ticket = await prisma.ticket.findUnique({
+      where: { id: Number(id) },
+    });
+    return ticket;
+  }
 
-        return new Promise((resolve, reject) => {
-            conexao.query(sql,(error, result) => {
-                if (error) return reject(false);
+  async getTicketHash(hash) {
+    const ticket = await prisma.ticket.findFirst({
+      where: { qrcode: String(hash) },
+    });
+    return ticket ? [ticket] : [];
+  }
 
-                const row = JSON.parse(JSON.stringify(result));
-                return resolve(row);    
-            });
-        });
-    }
+  async updateStatusTicket(id, status) {
+    const result = await prisma.ticket.update({
+      where: { id: Number(id) },
+      data: { status: String(status) },
+    });
+    // Adapter para manter consumo atual
+    return { affectedRows: result ? 1 : 0 };
+  }
 
-    async getTicket(id) {
-        const sql = 'SELECT * FROM tickets WHERE id = ?';
+  async putTicket(dados) {
+    const result = await prisma.ticket.update({
+      where: { id: Number(dados.id) },
+      data: {
+        full_name: dados.full_name,
+        telephone: dados.telephone,
+        birth_date: dados.birth_date,
+        cpf: dados.cpf,
+        update_at: dados.update_at ? new Date(dados.update_at) : null,
+        update_by: dados.update_by ?? null,
+      },
+    });
+    return result;
+  }
 
-        return new Promise((resolve, reject) => {
-            conexao.query(sql,id,(error, result) => {
-                if (error) return reject(false);
+  async getSearch(dados, startRow, endRow) {
+    const field = dados.tag === "cpf" ? "t.cpf" : "t.full_name";
+    const offset = Number(startRow) || 0;
+    const limit = Number(endRow) - offset || 10;
 
-                const row = JSON.parse(JSON.stringify(result));
-                return resolve(row);    
-            });
-        });
-    }
+    const rows = await prisma.ticket.findMany({
+      where:
+        dados.tag === "cpf"
+          ? { cpf: { contains: String(dados.query) } }
+          : { full_name: { contains: String(dados.query) } },
+      orderBy: [{ full_name: "asc" }, { id: "asc" }],
+      skip: offset,
+      take: limit,
+      select: {
+        id: true,
+        full_name: true,
+        telephone: true,
+        birth_date: true,
+        cpf: true,
+        qrcode: true,
+        status: true,
+        created_at: true,
+        update_at: true,
+        update_by: true,
+        seller: { select: { full_name: true } },
+      },
+    });
 
-    async getTicketHash(hash) {
-        const sql = 'SELECT * FROM tickets WHERE qrcode = ?';
+    return rows.map((t) => ({
+      id: t.id,
+      seller: t.seller?.full_name ?? null,
+      full_name: t.full_name,
+      telephone: t.telephone,
+      birth_date: t.birth_date,
+      cpf: t.cpf,
+      qrcode: t.qrcode,
+      status: t.status,
+      created_at: t.created_at,
+      update_at: t.update_at,
+      update_by: t.update_by,
+    }));
+  }
 
-        return new Promise((resolve, reject) => {
-            conexao.query(sql,hash,(error, result) => {
-                if (error) return reject(false);
-
-                const row = JSON.parse(JSON.stringify(result));
-                return resolve(row);    
-            });
-        });
-    }
-
-    async updateStatusTicket(id, status)
-    {
-        const sql = 'UPDATE tickets SET status = ? WHERE id = ?';
-
-        return new Promise((resolve, reject) => {
-            conexao.query(sql,[status, id],(error, result) => {
-                if (error) return reject(false);
-
-                const row = JSON.parse(JSON.stringify(result));
-                return resolve(row);
-            });
-        });
-    }
-
-    async putTicket(dados) {
-        const sql = 'UPDATE tickets SET full_name = ?, telephone = ?, birth_date = ?, cpf = ?, update_at = ?, update_by = ? WHERE id = ?';
-
-        return new Promise((resolve, reject) => {
-            conexao.query(sql,[dados.full_name, dados.telephone, dados.birth_date, dados.cpf, dados.update_at, dados.update_by ,dados.id],(error, result) => {
-                if (error) return reject(false);
-
-                const row = JSON.parse(JSON.stringify(result));
-                return resolve(row);
-            });
-        });
-    }
-
-    async getSearch(dados, startRow, endRow) {
-        const field = (dados.tag === 'cpf') ? 'cpf' : 'full_name';
-        const sql = `
-            WITH FilteredTickets AS (
-                SELECT t.id, 
-                       u.full_name AS seller, 
-                       t.full_name, 
-                       t.telephone, 
-                       t.birth_date, 
-                       t.cpf, 
-                       t.qrcode, 
-                       t.status, 
-                       t.created_at, 
-                       t.update_at, 
-                       t.update_by,
-                       ROW_NUMBER() OVER (ORDER BY t.full_name, t.id) AS row_num
-                  FROM tickets t
-                  LEFT JOIN users u ON u.id = t.seller_id
-                 WHERE t.${field} LIKE '%${dados.query}%'
-            )
-            SELECT id, seller, full_name, telephone, birth_date, cpf, qrcode, status, created_at, update_at, update_by
-              FROM FilteredTickets
-             WHERE row_num > '%${startRow}%'
-               AND row_num <= '%${endRow}%'
-             ORDER BY row_num;
-        `;
-    
-        return new Promise((resolve, reject) => {
-            conexao.query(sql, (error, result) => {
-                if (error) return reject(false);
-    
-                const row = JSON.parse(JSON.stringify(result));
-                return resolve(row);
-            });
-        });
-    }
-
-    async getAllTotalLike(query, tag) {
-        const field = (tag === 'cpf') ? 'cpf' : 'full_name';
-        const tr    = (field == 'cpf') ? " WHERE cpf LIKE '%" + query + "%'" : " WHERE full_name LIKE '%" + query + "%'" ;
-
-        const sql = 'SELECT COUNT(*) total FROM tickets ' + tr;
-
-        return new Promise((resolve, reject) => {
-            conexao.query(sql,(error, result) => {
-                console.log(error);
-                if (error) return reject(false);
-
-                const row = JSON.parse(JSON.stringify(result));
-                return resolve(row);    
-            });
-        });
-    }
-
+  async getAllTotalLike(query, tag) {
+    const where =
+      tag === "cpf"
+        ? { cpf: { contains: String(query) } }
+        : { full_name: { contains: String(query) } };
+    const total = await prisma.ticket.count({ where });
+    return [{ total }];
+  }
 }
 export default new ticketRepository();

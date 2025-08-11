@@ -1,28 +1,62 @@
 import { Router } from "express";
-import userController from "./app/Controller/userController.js";
-import userRequest from "./app/Request/userRequest.js";
 import ticketController from "./app/Controller/ticketController.js";
+import userController from "./app/Controller/userController.js";
 import ticketRequest from "./app/Request/ticketRequest.js";
+import userRequest from "./app/Request/userRequest.js";
 import jwtUtils from "./app/Utils/jwtUtils.js";
 
-const router  = Router();
+const router = Router();
 
-//GET
-router.get('/tickets', jwtUtils.checkToken, ticketController.getAllTickets);
-router.get('/ticket', jwtUtils.checkToken, ticketRequest.getTicket, ticketController.getTicket);
-router.get('/search', jwtUtils.checkToken, ticketController.getSearch);
+// Users
+router.post("/users", userRequest.postUser, userController.postUser);
+router.post("/login", userRequest.postLogin, userController.postLogin);
 
-//POST
-router.post('/user', userRequest.postUser,userController.postUser);
-router.post('/login', userRequest.postLogin,userController.postLogin);
-router.post('/ticket', jwtUtils.checkToken, ticketRequest.postTicket, ticketController.postTicket);
-router.post('/validate', jwtUtils.checkToken, ticketRequest.validate, ticketController.validate);
+// Tickets (RESTful)
+router.get("/tickets", jwtUtils.checkToken, ticketController.getAllTickets);
+router.get(
+  "/tickets/:id",
+  jwtUtils.checkToken,
+  ticketRequest.getTicket,
+  ticketController.getTicket
+);
+router.get("/tickets/search", jwtUtils.checkToken, ticketController.getSearch);
+router.post(
+  "/tickets",
+  jwtUtils.checkToken,
+  ticketRequest.postTicket,
+  ticketController.postTicket
+);
+router.put(
+  "/tickets/:id",
+  jwtUtils.checkToken,
+  ticketRequest.putTicket,
+  ticketController.putTicket
+);
+router.delete(
+  "/tickets/:id",
+  jwtUtils.checkToken,
+  ticketRequest.delTicket,
+  ticketController.delTicket
+);
+router.post(
+  "/tickets/:id/activate",
+  jwtUtils.checkToken,
+  ticketRequest.activateTicket,
+  ticketController.activateTicket
+);
+router.post(
+  "/tickets/validate",
+  jwtUtils.checkToken,
+  ticketRequest.validate,
+  ticketController.validate
+);
 
-//PUT
-router.put('/del-ticket', jwtUtils.checkToken, ticketRequest.delTicket, ticketController.delTicket);
-router.put('/ticket', jwtUtils.checkToken, ticketRequest.putTicket, ticketController.putTicket);
-router.put('/activate', jwtUtils.checkToken, ticketRequest.aticvateTicket, ticketController.aticvateTicket);
+router.use((req, res) => {
+  res.status(404).json({
+    error: true,
+    msgUser: "Rota não encontrada.",
+    msgOriginal: "Rota não encontrada.",
+  });
+});
 
-router.use((req, res) => {res.status(404).json({error: true,msgUser: "Rota não encontrada.",msgOriginal: "Rota não encontrada." })});
-
-export default router 
+export default router;

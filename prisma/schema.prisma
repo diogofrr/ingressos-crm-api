@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  full_name  String
+  email      String   @unique
+  password   String
+  telephone  String?  @unique
+
+  tickets    Ticket[]
+
+  @@map("users")
+}
+
+model Ticket {
+  id         String    @id @default(uuid())
+  seller_id  Int?
+  seller     User?     @relation(fields: [seller_id], references: [id])
+
+  full_name  String
+  telephone  String
+  birth_date String?
+  cpf        String    @unique
+  qrcode     String    @unique
+  status     String
+  batch      Int?
+
+  created_at DateTime? @default(now())
+  update_at  DateTime?
+  update_by  Int?
+
+  @@map("tickets")
+}
