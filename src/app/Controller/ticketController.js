@@ -198,27 +198,6 @@ class ticketController {
     });
   }
 
-  async getSearch(req, res) {
-    let arrTickets = [];
-    const startRow = req.query.start_row;
-    const endRow = req.query.end_row;
-
-    try {
-      arrTickets = await ticketRepository.getSearch(
-        req.query,
-        startRow,
-        endRow
-      );
-    } catch (error) {}
-
-    return res.status(200).json({
-      error: false,
-      msgUser: null,
-      msgOriginal: null,
-      result: arrTickets,
-    });
-  }
-
   async activateTicket(req, res) {
     try {
       const id = req.params.id || req.body.id;

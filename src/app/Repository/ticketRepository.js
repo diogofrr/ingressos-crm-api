@@ -131,7 +131,7 @@ class ticketRepository {
         ? { cpf: { contains: String(query) } }
         : { full_name: { contains: String(query) } };
     const total = await prisma.ticket.count({ where });
-    return [{ total }];
+    return total;
   }
 }
 export default new ticketRepository();

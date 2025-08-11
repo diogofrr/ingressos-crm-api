@@ -13,7 +13,6 @@ router.post("/login", userRequest.postLogin, userController.postLogin);
 
 // Tickets (RESTful)
 router.get("/tickets", jwtUtils.checkToken, ticketController.getAllTickets);
-router.get("/tickets/search", jwtUtils.checkToken, ticketController.getSearch);
 router.get(
   "/tickets/:id",
   jwtUtils.checkToken,
