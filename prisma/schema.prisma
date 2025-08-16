@@ -30,7 +30,7 @@ model Ticket {
   cpf        String    @unique
   qrcode     String    @unique
   status     String
-  batch      Int?
+  batch      Int
 
   created_at DateTime? @default(now())
   update_at  DateTime?

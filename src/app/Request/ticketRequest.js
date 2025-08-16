@@ -20,6 +20,17 @@ class ticketRequest {
       msg = "Parametro full_name é obrigatorio.";
     }
 
+    if (!req.body.batch) {
+      msg = "Parametro batch é obrigatorio.";
+    }
+
+    if (req.body.batch) {
+      const batch = parseInt(req.body.batch);
+      if (isNaN(batch) || batch < 1 || batch > 5) {
+        msg = "Parametro batch deve ser um número inteiro entre 1 e 5.";
+      }
+    }
+
     if (msg) {
       return res.status(422).json({
         error: true,
@@ -111,6 +122,17 @@ class ticketRequest {
 
     if (!req.body.full_name) {
       msg = "Parametro full_name é obrigatorio.";
+    }
+
+    if (!req.body.batch) {
+      msg = "Parametro batch é obrigatorio.";
+    }
+
+    if (req.body.batch) {
+      const batch = parseInt(req.body.batch);
+      if (isNaN(batch) || batch < 1 || batch > 5) {
+        msg = "Parametro batch deve ser um número inteiro entre 1 e 5.";
+      }
     }
 
     if (!req.params.id && !req.body.id) {

@@ -33,6 +33,7 @@ class ticketsUtils {
       cpf: cpf,
       qrcode: qrcode,
       status: "A",
+      batch: dados.batch,
     };
 
     return arrDados;
@@ -58,6 +59,7 @@ class ticketsUtils {
       cpf: cpf,
       update_at: dateUp,
       update_by: sellerId,
+      batch: dados.batch,
     };
 
     return arrDados;

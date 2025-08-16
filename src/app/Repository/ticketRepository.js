@@ -31,6 +31,7 @@ class ticketRepository {
         cpf: true,
         qrcode: true,
         status: true,
+        batch: true,
         created_at: true,
         update_at: true,
         update_by: true,
@@ -78,6 +79,7 @@ class ticketRepository {
         cpf: dados.cpf,
         update_at: dados.update_at ? new Date(dados.update_at) : null,
         update_by: dados.update_by ?? null,
+        batch: dados.batch,
       },
     });
     return result;
@@ -103,6 +105,7 @@ class ticketRepository {
         cpf: true,
         qrcode: true,
         status: true,
+        batch: true,
         created_at: true,
         update_at: true,
         update_by: true,
@@ -119,6 +122,7 @@ class ticketRepository {
       cpf: t.cpf,
       qrcode: t.qrcode,
       status: t.status,
+      batch: t.batch,
       created_at: t.created_at,
       update_at: t.update_at,
       update_by: t.update_by,
