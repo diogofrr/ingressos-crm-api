@@ -85,7 +85,7 @@ class ticketsUtils {
 
   getEventInfo() {
     return {
-      title: "ARRAIÁ CRM",
+      title: "SAMBA DO SEU ZÉ",
       date: "11/10/2025",
       time: "16H ÀS 00H",
       addressLine1: "R. QUINTINO BOCAIÚVA, 2607 - SARAIVA",
