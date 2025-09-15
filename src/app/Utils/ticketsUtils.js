@@ -86,9 +86,9 @@ class ticketsUtils {
   getEventInfo() {
     return {
       title: "ARRAIÁ CRM",
-      date: "07/06/2025",
+      date: "11/10/2025",
       time: "16H ÀS 00H",
-      addressLine1: "R. QUINTINO BOCAIÚVA, 2607- SARAIVA",
+      addressLine1: "R. QUINTINO BOCAIÚVA, 2607 - SARAIVA",
       addressLine2: "UBERLÂNDIA/MG",
     };
   }
